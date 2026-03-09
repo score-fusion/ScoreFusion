@@ -266,7 +266,7 @@ python train_ensemble_325model.py \
 ScoreFusion uses a 3D network to fuse 2D scores. Core logic is simple and in 3D_scorefuser/diffusion_model/unet_brats.py. 
 
 Different combinations of 3D and 2D networks can lead to meaningful re-implementation of baselines on Brats. 
-Several different main python files use different classes in unet_brats.py and can use different combination of 2D nets. The parameter "--baseline" indicates how the 2D scores are fused. 
+Several different main python files use different classes in unet_brats.py and can use different combinations of 2D nets. The parameter "--baseline" indicates how the 2D scores are fused. 
 
 
 Python files settings:
@@ -289,7 +289,7 @@ Python files settings:
 | `3D_feature` | Same as `3D`, but introduces 2D feature maps into the 3D network |
 | `dummy` | Output noise for debug purpose |
 
-Several combinations of the above results in reasonable re-implementations of baselines on Brats:
+Several combinations of the above result in reasonable re-implementations of baselines on Brats:
 
 | baseline methods |  Setting | 2D training | 3D training |
 |----------------|--------------------------------------------------|---|---|
@@ -300,11 +300,11 @@ Several combinations of the above results in reasonable re-implementations of ba
 | 2D palette | use `train_ensemble.py` with `2D` | Need to train 2D models without nearby_slices | None |
 | 2.5D palette | use `train_ensemble_325model.py` with `2D` | Need to train 2D models with nearby_slices | None |
 
-Note that for all baselines, you need to add `--no_self_consistency` flag during inference. This results in a more reasonable immplementation of baselines and slightly worse performance. Also, to utilize pretrained 2D models, "resume_state" in the 2D config needs to be changed and the 2D config file names needs to passed into 3D/inference stage.
+Note that for all baselines, you need to add `--no_self_consistency` flag during inference. This results in a more reasonable implementation of baselines and slightly worse performance. Also, to utilize pretrained 2D models, "resume_state" in the 2D config needs to be changed and the 2D config file names need to be passed into the 3D/inference stage.
 
-The training logic is in 3D_scorefuser/diffusion_model/trainer_brats.py. For better visualization, the first two GPUs will plot samples in training set and the other GPUs will plot validation samples. 
+The training logic is in 3D_scorefuser/diffusion_model/trainer_brats.py. For better visualization, the first two GPUs will plot samples in the training set and the other GPUs will plot validation samples. 
 
-Current resume strategy did not reuse the optimizer parameters. This works fine with cross-stage pretraining + fine-tuning in the current repo. If you want to resume within the same stage, please look at the save and resume functions in the code and make adjustment accordingly.
+Current resume strategy did not reuse the optimizer parameters. This works fine with cross-stage pretraining + fine-tuning in the current repo. If you want to resume within the same stage, please look at the save and resume functions in the code and make adjustments accordingly.
 
 Unfortunately, we lost all ckpts due to a system update on the cluster. Therefore, we have no plan in releasing the pretrained checkpoints.
 
