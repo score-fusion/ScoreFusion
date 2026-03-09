@@ -119,6 +119,8 @@ python run.py -p train -c config/brast_5SSR_2.json
 python run.py -p train -c config/brast_5SSR_3.json
 ```
 
+> Important: During the first epoch, the dataset cache will be generated and saved. To prevent CPU memory overflow, we recommend using a small number of workers during this stage. Once the first epoch finishes, the cache should be fully created. For subsequent epochs, you can safely increase the number of workers and batch size, since the data will be loaded directly from the cache.
+
 <details>
 <summary><b>Configuration Options</b></summary>
 
