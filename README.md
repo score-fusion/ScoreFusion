@@ -119,7 +119,7 @@ python run.py -p train -c config/brast_5SSR_2.json
 python run.py -p train -c config/brast_5SSR_3.json
 ```
 
-> Important: During the first epoch, the dataset cache will be generated and saved. To prevent CPU memory overflow, we recommend using a small number of workers during this stage. Once the first epoch finishes, the cache should be fully created. For subsequent epochs, you can safely increase the number of workers and batch size, since the data will be loaded directly from the cache.
+> Important: During the first epoch, the dataset cache is generated and saved. At this stage, the 2D dataloader calls the 3D dataloader and samples a 2D slice. This design ensures consistency between the 2D and 3D datasets and helps reduce potential bugs during development. (Note that the cache needs to be cleared after the 3D dataloader is modified). However, this process can require a significant amount of CPU memory. To avoid CPU memory overflow, we recommend using a small number of workers during the first epoch. Once the first epoch finishes, the cache should be fully created. For subsequent epochs, you can re-run the code with a larger number of workers and a bigger batch size, since the data will then be loaded directly from the cache.
 
 <details>
 <summary><b>Configuration Options</b></summary>

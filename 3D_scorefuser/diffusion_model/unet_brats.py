@@ -1158,7 +1158,6 @@ class model_ensemble_three_25_model(nn.Module):
                 x_2D_3 = x.permute(0, 4, 1, 2, 3).reshape(-1, c, d, h)
                 out_2D_3 = torch.zeros(b*w, self.out_c, d, h, device=x_2D_3.device, dtype=x_2D_3.dtype)
                 for i in range(0, b*h, b_2D):
-                    # out_2D_3[i:i+b_2D] = self.model2D_3.denoise_inference(x_2D_3[i:i+b_2D,:self.out_c], t_2D[i:i+b_2D], y_cond=x_2D_3[i:i+b_2D,self.out_c:]) # 8 1 88 64
                     total_cond_array = []
                     for idx in range(i, i+b_2D):
                         data_array = []
@@ -1168,13 +1167,8 @@ class model_ensemble_three_25_model(nn.Module):
                         cond_array = torch.cat([data_array,x_2D_3[idx,self.out_c+num_modality:]], dim = 0)
                         total_cond_array.append(cond_array)
                     total_cond_array = torch.stack(total_cond_array)
-                    # import pdb; pdb.set_trace()
-                    # print(total_cond_array.shape) # 8, 9, 88, 64
-                    # self.debug_viz(total_cond_array[0:1], f"debug/output_2D_3")
-                    # raise
-                    out_2D_3[i:i+b_2D] = self.model2D_2.denoise_inference(x_2D_3[i:i+b_2D,:self.out_c], t_2D[i:i+b_2D], y_cond=total_cond_array) # 8 1 88 64
-                    # save the output of 2D model
-                    # self.debug_viz( out_2D_2[i:i+b_2D], f"debug/output_2D_2_{i}")
+                    out_2D_3[i:i+b_2D] = self.model2D_3.denoise_inference(x_2D_3[i:i+b_2D,:self.out_c], t_2D[i:i+b_2D], y_cond=total_cond_array) # 8 1 88 64
+                    
                 out_2D_3 = out_2D_3.reshape(b, w, self.out_c, d, h).permute(0, 2, 3, 4, 1)
 
                 x_2D_1 = x.permute(0, 2, 1, 3, 4).reshape(-1, c, h, w)
@@ -1256,7 +1250,6 @@ class model_ensemble_three_25_model(nn.Module):
                 out_feature_3_7 = torch.zeros(b*w, 128, 76, 96, device=x_2D_2.device, dtype=x_2D_2.dtype)
                 out_feature_3_10 = torch.zeros(b*w, 64, 152, 192, device=x_2D_2.device, dtype=x_2D_2.dtype)
                 for i in range(0, b*h, b_2D):
-                    # out_2D_3[i:i+b_2D] = self.model2D_3.denoise_inference(x_2D_3[i:i+b_2D,:self.out_c], t_2D[i:i+b_2D], y_cond=x_2D_3[i:i+b_2D,self.out_c:]) # 8 1 88 64
                     total_cond_array = []
                     for idx in range(i, i+b_2D):
                         data_array = []
@@ -1266,17 +1259,13 @@ class model_ensemble_three_25_model(nn.Module):
                         cond_array = torch.cat([data_array,x_2D_3[idx,self.out_c+num_modality:]], dim = 0)
                         total_cond_array.append(cond_array)
                     total_cond_array = torch.stack(total_cond_array)
-                    # import pdb; pdb.set_trace()
-                    # print(total_cond_array.shape) # 8, 9, 88, 64
-                    # self.debug_viz(total_cond_array[0:1], f"debug/output_2D_3")
-                    # raise
-                    out_2D_3[i:i+b_2D], F = self.model2D_2.denoise_inference(x_2D_3[i:i+b_2D,:self.out_c], t_2D[i:i+b_2D], y_cond=total_cond_array, feature = True) # 8 1 88 64
+
+                    out_2D_3[i:i+b_2D], F = self.model2D_3.denoise_inference(x_2D_3[i:i+b_2D,:self.out_c], t_2D[i:i+b_2D], y_cond=total_cond_array, feature = True) # 8 1 88 64
                     out_feature_3_1[i:i+b_2D] = F[1]
                     out_feature_3_4[i:i+b_2D] = F[4]
                     out_feature_3_7[i:i+b_2D] = F[7]
                     out_feature_3_10[i:i+b_2D] = F[10]
-                    # save the output of 2D model
-                    # self.debug_viz( out_2D_2[i:i+b_2D], f"debug/output_2D_2_{i}")
+
                 out_2D_3 = out_2D_3.reshape(b, w, self.out_c, d, h).permute(0, 2, 3, 4, 1)
                 out_feature_3_1 = out_feature_3_1.reshape(b, w, 512, 19, 24).permute(0, 2, 3, 4, 1)
                 out_feature_3_4 = out_feature_3_4.reshape(b, w, 256, 38, 48).permute(0, 2, 3, 4, 1)
